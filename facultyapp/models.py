@@ -3,7 +3,7 @@ from adminapp.models import faculty,Course
 
 
 
-# Create your models here.
+# Create your models here.+
 class coursecontent(models.Model):
     id = models.AutoField(primary_key=True)
     faculty=models.ForeignKey(faculty,blank=False,on_delete=models.CASCADE)

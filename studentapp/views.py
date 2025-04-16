@@ -17,18 +17,22 @@ def studenthome(request):
 def checkstudentlogin(request):
     studentname = request.POST.get('uname')
     studentpwd = request.POST.get('pwd')
-    flag = Student.objects.filter(Q(studentid=studentname) & Q(password=studentpwd))
 
-    print(flag)
+    # Ensure studentid is a number
+    if not studentname.isdigit():
+        msg = 'Invalid Student ID or Password'
+        return render(request, 'studentlogin.html', {'msg': msg})
+
+    flag = Student.objects.filter(Q(studentid=studentname) & Q(password=studentpwd)).exists()
 
     if flag:
         print("login successful")
-        request.session['sname']=studentname
+        request.session['sname'] = studentname
         student = Student.objects.get(studentid=studentname)
-        return render(request,'studenthome.html',{'studentname':studentname,'student':student})
+        return render(request, 'studenthome.html', {'studentname': studentname, 'student': student})
     else:
-        msg='Username or Password Wrong'
-        return render(request,'studentlogin.html',{'msg':msg})
+        msg = 'Username or Password Wrong'
+        return render(request, 'studentlogin.html', {'msg': msg})
 
 
 

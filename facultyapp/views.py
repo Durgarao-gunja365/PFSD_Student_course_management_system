@@ -13,20 +13,25 @@ def facultyhome(request):
     fname = request.session['fname']
     return render(request,'facultyhome.html',{'facultyname':fname})
 
-def checkfacultylogin(request):
-    faultyname = request.POST.get('uname')
-    facultypwd = request.POST.get('pwd')
-    flag = faculty.objects.filter(Q(facultyid=faultyname) & Q(password=facultypwd))
 
-    print(flag)
+def checkfacultylogin(request):
+    facultyname = request.POST.get('uname')
+    facultypwd = request.POST.get('pwd')
+
+    # Ensure facultyid is a number
+    if not facultyname.isdigit():
+        msg = 'Invalid Faculty ID or Password'
+        return render(request, 'facultylogin.html', {'msg': msg})
+
+    flag = faculty.objects.filter(Q(facultyid=facultyname) & Q(password=facultypwd)).exists()
 
     if flag:
-        print("login successful")
-        request.session['fname']=faultyname
-        return render(request,'facultyhome.html',{'facultyname':faultyname})
+        print("Login successful")
+        request.session['fname'] = facultyname
+        return render(request, 'facultyhome.html', {'facultyname': facultyname})
     else:
-        msg='Username or Password is Wrong'
-        return render(request,'facultylogin.html',{'msg':msg})
+        msg = 'Username or Password is Wrong'
+        return render(request, 'facultylogin.html', {'msg': msg})
 
 def facultycourse(request):
     fname = request.session['fname']
